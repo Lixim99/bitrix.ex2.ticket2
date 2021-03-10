@@ -82,10 +82,22 @@ if($this->startResultCache(false,$USER->GetID())) {
     $arResult['USERS'] = $arUsers;
     $arResult['NEWS'] = $arNews;
     $arResult['NEWS_COUNT'] = count($arNews);
+    $arResult['IBLOCK_ID'] = $newsIbID;
 
-    $this->SetResultCacheKeys(array('NEWS_COUNT'));
+    $this->SetResultCacheKeys(array("NEWS_COUNT","IBLOCK_ID"));
     $this->includeComponentTemplate();
 }
+
+$res = CIBlock::GetByID($arResult['IBLOCK_ID']);
+$ar_res = $res->GetNext();
+$this->AddIncludeAreaIcon(
+    array(
+        'URL'   => '/bitrix/admin/iblock_element_admin.php?IBLOCK_ID=' . $arResult['IBLOCK_ID'] . '&type='. $ar_res['IBLOCK_TYPE_ID'] .'&lang=ru&find_el_y=Y&clear_filter=Y&apply_filter=Y',
+        'TITLE' => getMessage('DB_IN_ADMIN'),
+        "IN_PARAMS_MENU" => true
+    )
+);
+
 $APPLICATION->SetPageProperty('h1', getMessage('NEWS_H1') .  $arResult['NEWS_COUNT']);
 $APPLICATION->SetPageProperty('title', getMessage('NEWS_TITLE') . $arResult['NEWS_COUNT']);
 ?>
